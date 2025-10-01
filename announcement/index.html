@@ -5,16 +5,73 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ANNOUNCEMENT | STUDIO OFF-BEAT</title>
   <meta name="color-scheme" content="light" />
-  <link rel="preload" href="/data/events.json" as="fetch" crossorigin>
   <style>
-    /* 홈 CSS를 가져오거나 <link rel="stylesheet">로 분리해도 됩니다 */
-    /* 아래 한 줄만 기억: 5선 악보 느낌 라인(옵션) */
+    /* ------- Reset / Base (index.html과 동일) ------- */
+    *,*::before,*::after{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;line-height:1.65;background:#f6f6f6;color:#222;
+      -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+      font-family:"Neue Montreal","NeueMontreal","Inter","Noto Sans KR",-apple-system,system-ui,"Apple SD Gothic Neo",Roboto,Arial,sans-serif;
+      letter-spacing:.01em;
+    }
+    img,svg,video{max-width:100%;display:block}
+    .wrap{max-width:1160px;margin-inline:auto;padding:0 18px}
+
+    /* ------- Header (index 동일) ------- */
+    header{position:sticky;top:0;z-index:40;background:#f6f6f6;border-bottom:2px solid #000}
+    .mast{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+    .brand{letter-spacing:.02em;font-weight:700;color:#000;text-decoration:none;font-size:20px}
+    .menu{display:flex;align-items:center;gap:26px}
+    .menu a{position:relative;text-decoration:none;color:#222;font-size:14px}
+    .menu a::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:1px;background:#000;transform:scaleX(0);transform-origin:left;transition:transform .25s ease}
+    .menu a:hover::after{transform:scaleX(1)}
+
+    /* ------- Camera Grid ------- */
+    :root{ --grid-line: rgba(0,0,0,.22); --grid-bold: rgba(0,0,0,.18); }
+    .cam-grid{position:fixed;inset:0;pointer-events:none;z-index:3;
+      background-image:
+        linear-gradient(to right,transparent 0 calc(33.333% - .5px), var(--grid-bold) calc(33.333% - .5px) calc(33.333% + .5px),
+          transparent calc(33.333% + .5px) calc(66.666% - .5px), var(--grid-bold) calc(66.666% - .5px) calc(66.666% + .5px),
+          transparent calc(66.666% + .5px) 100%),
+        linear-gradient(to bottom,transparent 0 calc(33.333% - .5px), var(--grid-bold) calc(33.333% - .5px) calc(33.333% + .5px),
+          transparent calc(33.333% + .5px) calc(66.666% - .5px), var(--grid-bold) calc(66.666% - .5px) calc(66.666% + .5px),
+          transparent calc(66.666% + .5px) 100%),
+        linear-gradient(45deg, transparent calc(50% - .5px), var(--grid-line) calc(50% - .5px) calc(50% + .5px), transparent calc(50% + .5px)),
+        linear-gradient(-45deg, transparent calc(50% - .5px), var(--grid-line) calc(50% - .5px) calc(50% + .5px), transparent calc(50% + .5px));
+      background-size:100% 100%; mix-blend-mode:multiply;
+    }
+
+    /* ------- Sections / Label / Vlines ------- */
+    .section{padding:28px 0;border-bottom:1px solid #000}
+    .label{display:flex;align-items:center;gap:10px;margin:0 0 14px 0;color:#000;font-weight:700;letter-spacing:.06em}
+    .label::after{content:"";height:1px;background:#000;flex:1}
+    .with-vlines{position:relative}
+    .with-vlines::before{content:"";position:absolute;top:0;bottom:0;left:50%;width:1px;background:#000;opacity:.35;pointer-events:none}
+    @media (max-width:799px){.with-vlines::before{display:none}}
+
+    /* ------- Announcement Card (index 동일) ------- */
+    .ann-card{border:1px solid #000;background:#fff;padding:16px;display:grid;grid-template-columns:1fr;gap:14px}
+    @media (min-width:880px){ .ann-card{grid-template-columns:1.2fr .8fr} }
+    .ann-title{margin:0;font-size:20px;letter-spacing:-0.01em}
+    .ann-meta{display:flex;flex-wrap:wrap;gap:8px;font-size:14px;color:#333}
+    .badge{border:1px solid #000;padding:4px 8px}
+    .pill{border:1px solid #000;padding:4px 8px;background:#000;color:#fff}
+    .ann-actions{display:flex;gap:10px;margin-top:14px}
+    .ann-btn{appearance:none;border:1px solid #000;background:#000;color:#fff;padding:8px 12px;font-size:13px;cursor:pointer;text-decoration:none}
+    .ann-btn.ghost{background:transparent;color:#000}
+    .ann-list{margin:0;padding:0;list-style:none;font-size:14px;background:#fff}
+    .ann-list li{display:flex;justify-content:space-between;border-top:1px solid #000;padding:10px 0}
+
+    /* 악보 5선 느낌(선택 사항) */
     .staff-bg{background-image:linear-gradient(to bottom, rgba(0,0,0,.08) 1px, transparent 1px);background-size:100% 22px}
+
+    /* Footer */
+    footer{padding:18px 0}
   </style>
 </head>
 <body>
   <div class="cam-grid" aria-hidden="true"></div>
-
   <header>
     <div class="wrap mast" role="navigation">
       <a class="brand" href="/">STUDIO OFF-BEAT</a>
@@ -30,137 +87,22 @@
     <section class="section with-vlines">
       <h2 class="label">ANNOUNCEMENT</h2>
 
-      <!-- 검색 -->
+      <!-- 검색바 -->
       <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px">
         <input id="q" type="search" placeholder="검색(제목/장소/태그)" style="padding:8px;border:1px solid #000;flex:1">
-        <button id="clear" class="btn ghost">초기화</button>
+        <button id="clear" class="ann-btn ghost">초기화</button>
       </div>
 
-      <!-- 목록 컨테이너 -->
+      <!-- 목록/상세 컨테이너 -->
       <div id="list"></div>
-
-      <!-- 상세 컨테이너 -->
       <article id="detail" hidden></article>
     </section>
   </main>
 
   <footer><div class="wrap">© <span id="y"></span> STUDIO OFF-BEAT</div></footer>
 
-  <!-- 공용 유틸 -->
-  <script type="module" src="/assets/js/utils.js"></script>
-  <!-- 페이지 스크립트 -->
-  <script type="module">
-    import { $, $$, fetchJSON, formatDateK, buildICS, downloadBlob, renderMarkdown, matches } from '/assets/js/utils.js';
-
-    // Footer year
-    $('#y').textContent = new Date().getFullYear();
-
-    const params = new URLSearchParams(location.search);
-    const id = params.get('id');
-    const listEl = $('#list');
-    const detailEl = $('#detail');
-
-    const data = await fetchJSON('/data/events.json');
-    data.sort((a,b)=> new Date(a.datetime) - new Date(b.datetime));
-
-    function evCard(ev){
-      const price = ev.price ? `₩${ev.price.toLocaleString()}` : 'Free';
-      return `
-        <div class="ann-card staff-bg" style="margin-bottom:14px">
-          <div>
-            <h3 class="ann-title">${ev.title}</h3>
-            <div class="ann-meta" style="margin-top:6px">
-              <span class="badge">${formatDateK(ev.datetime)}</span>
-              <span class="badge">${ev.venue||''}</span>
-              <span class="pill">${price}</span>
-            </div>
-            <p style="margin:12px 0 0;color:#333;max-width:60ch">${(ev.desc_md||'').split('\n')[0]||''}</p>
-            <div class="ann-actions">
-              ${ev.tickets_url?`<a class="ann-btn" href="${ev.tickets_url}" target="_blank" rel="noopener">예매하기</a>`:''}
-              ${ev.more_url?`<a class="ann-btn ghost" href="${ev.more_url}" target="_blank" rel="noopener">자세히 보기</a>`:''}
-              <button class="ann-btn ghost" data-ics="${ev.id}">캘린더(.ics)</button>
-              <a class="ann-btn ghost" href="?id=${encodeURIComponent(ev.id)}">상세보기</a>
-            </div>
-          </div>
-          <div>
-            <ul class="ann-list" aria-label="라인업">
-              ${(ev.lineup||[]).map(x=>`<li><span>${x.label}</span><span>${x.time}</span></li>`).join('')}
-            </ul>
-          </div>
-        </div>`;
-    }
-
-    function renderList(q=''){
-      const upcoming = data.filter(x=>x.status==='upcoming');
-      const past = data.filter(x=>x.status!=='upcoming').reverse();
-
-      function block(title, arr){
-        const filtered = arr.filter(x=>matches(q, x.title, x.venue, (x.tags||[]).join(' '), x.desc_md));
-        if(!filtered.length) return '';
-        return `<h3 class="label" style="margin-top:18px">${title}</h3>` + filtered.map(evCard).join('');
-      }
-
-      listEl.innerHTML = block('UPCOMING', upcoming) + block('PAST', past);
-      listEl.querySelectorAll('[data-ics]').forEach(btn=>{
-        btn.addEventListener('click', ()=>{
-          const ev = data.find(x=>x.id===btn.dataset.ics);
-          const blob = buildICS({
-            title: ev.title, desc: ev.desc_md, location: ev.venue,
-            start: ev.datetime, end: ev.end
-          });
-          downloadBlob(blob, `${ev.title.replace(/\s+/g,'_')}.ics`);
-        });
-      });
-    }
-
-    function renderDetail(ev){
-      detailEl.hidden = false;
-      listEl.hidden = true;
-      detailEl.innerHTML = `
-        <div class="ann-card staff-bg">
-          <div>
-            <h1 class="ann-title" style="font-size:28px;line-height:1.2">${ev.title}</h1>
-            <div class="ann-meta" style="margin-top:8px">
-              <span class="badge">${formatDateK(ev.datetime)}</span>
-              <span class="badge">${ev.venue||''}</span>
-              <span class="pill">${ev.price?`₩${ev.price.toLocaleString()}`:'Free'}</span>
-            </div>
-            <div class="ann-actions">
-              ${ev.tickets_url?`<a class="ann-btn" href="${ev.tickets_url}" target="_blank" rel="noopener">예매하기</a>`:''}
-              <button class="ann-btn ghost" id="icsDl">캘린더(.ics)</button>
-              <a class="ann-btn ghost" href="/announcement/">목록으로</a>
-            </div>
-            <div style="margin-top:14px">${renderMarkdown(ev.desc_md||'')}</div>
-          </div>
-          <div>
-            ${ev.trailer?`
-              <video class="modal-media" controls playsinline preload="metadata" style="width:100%;max-height:50vh">
-                <source src="/${ev.trailer}" type="video/mp4">
-              </video>`:
-              ev.poster?`<img src="/${ev.poster}" alt="${ev.title}" style="width:100%">`:''
-            }
-            <ul class="ann-list" style="margin-top:10px">
-              ${(ev.lineup||[]).map(x=>`<li><span>${x.label}</span><span>${x.time}</span></li>`).join('')}
-            </ul>
-          </div>
-        </div>`;
-      $('#icsDl').addEventListener('click', ()=>{
-        const blob = buildICS({title: ev.title, desc: ev.desc_md, location: ev.venue, start: ev.datetime, end: ev.end});
-        downloadBlob(blob, `${ev.title.replace(/\s+/g,'_')}.ics`);
-      });
-    }
-
-    // 검색
-    $('#q').addEventListener('input', e=>renderList(e.target.value));
-    $('#clear').addEventListener('click', ()=>{ $('#q').value=''; renderList(''); });
-
-    if(id){
-      const ev = data.find(x=>x.id===id);
-      if(ev) renderDetail(ev); else renderList('');
-    }else{
-      renderList('');
-    }
-  </script>
-  <script type="module" src="../assets/js/announcement.js"></script>
+  <!-- 페이지 스크립트 (데이터 렌더) -->
+  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+  <script type="module" src="/assets/js/announcement.js"></script>
 </body>
 </html>
