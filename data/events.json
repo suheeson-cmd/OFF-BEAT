@@ -1,0 +1,25 @@
+[
+  {
+    "id": "obs-07",
+    "title": "OFF-BEAT STAGE #07",
+    "datetime": "2025-03-15T19:30:00+09:00",
+    "end": "2025-03-15T21:30:00+09:00",
+    "venue": "Seochon Studio, Seoul",
+    "price": 20000,
+    "status": "upcoming",
+    "featured": true,
+    "poster": "images/obs07/poster.jpg",
+    "hero": "banner/obs07-hero.jpg",
+    "trailer": "clips/obs07-trailer.mp4",
+    "lineup": [
+      { "time": "18:45", "label": "Door Open" },
+      { "time": "19:30", "label": "Act 1 — Folded" },
+      { "time": "20:10", "label": "Act 2 — Dune" },
+      { "time": "20:50", "label": "Act 3 — Rhea" }
+    ],
+    "desc_md": "로컬 뮤지션 3팀과 함께하는 소규모 라이브.\n\n- 현장 녹음 및 영상 아카이빙 진행\n- 좌석 한정",
+    "tickets_url": "#",
+    "more_url": "#",
+    "tags": ["stage", "seochon", "live"]
+  }
+]

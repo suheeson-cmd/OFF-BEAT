@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OFF‑BEAT — 서촌 기반 사진·영상·공연</title>
+  <meta name="description" content="서촌 기반 사진·영상·공연 기획 스튜디오 OFF‑BEAT의 포트폴리오 및 문의." />
+  <meta name="color-scheme" content="light dark" />
+  <style>
+    /* ---- 기본 리셋 ---- */
+    *,*::before,*::after{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;line-height:1.6;-webkit-font-smoothing:antialiased}
+    img,svg,video{max-width:100%;display:block}
+
+    /* ---- 테마 변수 ---- */
+    :root{
+      --bg: #ffffff;
+      --fg: #0a0a0a;
+      --muted: #6b7280; /* neutral-500 느낌 */
+      --border: #e5e7eb; /* neutral-200 */
+      --accent: #0f172a; /* slate-900 */
+      --card: #f8fafc;  /* slate-50 */
+      --radius: 16px;
+      --container: 1100px;
+    }
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg: #0b0c0f;
+        --fg: #f5f7fb;
+        --muted: #98a2b3;
+        --border: #1f242d;
+        --accent: #e5e7eb;
+        --card: #111827;
+      }
+    }
+
+    /* ---- 전역 스타일 ---- */
+    body{
+      font-family: ui-sans-serif, system-ui, -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", Roboto, "Segoe UI", "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: var(--bg);
+      color: var(--fg);
+    }
+    .container{max-width:var(--container); margin-inline:auto; padding-inline:20px}
+    .visually-hidden{position:absolute!important;height:1px;width:1px;overflow:hidden;clip:rect(1px,1px,1px,1px);white-space:nowrap}
+
+    /* ---- 헤더 ---- */
+    header{position:sticky;top:0;backdrop-filter:saturate(180%) blur(8px);background:color-mix(in oklab, var(--bg) 85%, transparent);border-bottom:1px solid var(--border);z-index:50}
+    .nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:14px}
+    .brand{font-weight:700;letter-spacing:-0.01em}
+    .menu{display:flex;gap:18px}
+    .menu a{color:inherit;text-decoration:none;font-size:0.95rem}
+    .menu a.btn{border:1px solid var(--border);padding:8px 12px;border-radius:12px}
+
+    /* ---- 히어로 ---- */
+    .hero{padding-block:56px}
+    .hero h1{font-size:clamp(28px, 6vw, 48px);line-height:1.15;margin:0}
+    .hero p{color:var(--muted);margin:12px 0 0}
+    .cta{display:flex;gap:12px;margin-top:20px}
+    .btn-primary, .btn-ghost{display:inline-block;text-decoration:none;border-radius:14px;padding:10px 14px}
+    .btn-primary{background:var(--fg);color:var(--bg)}
+    .btn-ghost{border:1px solid var(--border);color:inherit}
+
+    /* ---- 카드 그리드 ---- */
+    .section{margin-block:36px}
+    .section h2{font-size:1.25rem;margin:0 0 12px 0}
+    .grid{display:grid;grid-template-columns:1fr;gap:16px}
+    @media (min-width:720px){.grid{grid-template-columns:repeat(3,1fr)}}
+    .card{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--card)}
+    .thumb{aspect-ratio:16/10;background:#d1d5db;display:grid;place-items:center;font-size:12px;color:#111}
+    .card .meta{padding:12px}
+    .card .title{font-size:0.95rem;margin:0 0 4px 0}
+    .card .muted{color:var(--muted);font-size:0.85rem}
+
+    /* ---- 하이라이트 블록 ---- */
+    .highlight{border:1px solid var(--border);border-radius:var(--radius);padding:18px}
+
+    /* ---- 푸터 ---- */
+    footer{border-top:1px solid var(--border);padding-block:24px;color:var(--muted);font-size:0.9rem}
+
+    /* ---- 유틸 ---- */
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav" role="navigation" aria-label="주요">
+      <a class="brand" href="/">OFF‑BEAT</a>
+      <nav class="menu" aria-label="상단 메뉴">
+        <a href="#works">작업</a>
+        <a href="#about">소개</a>
+        <a class="btn" href="#contact">문의</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Hero -->
+    <section class="hero" id="home">
+      <h1>기록·공연·이미지를 엮어<br/>서촌의 결을 만듭니다.</h1>
+      <p>사진/영상 제작, 공연 기획·아카이빙, 로컬 크리에이티브 콘텐츠.</p>
+      <div class="cta">
+        <a class="btn-primary" href="#works">작업 보기</a>
+        <a class="btn-ghost" href="#contact">문의하기</a>
+      </div>
+    </section>
+
+    <!-- Works -->
+    <section class="section" id="works" aria-labelledby="works-heading">
+      <h2 id="works-heading">최근 작업</h2>
+      <div class="grid">
+        <!-- 카드 예시 1: 이미지가 아직 없으면 .thumb 영역의 텍스트를 지우고 배경 이미지를 넣으세요 -->
+        <a class="card" href="#">
+          <div class="thumb" style="background-image:url('thumbs/stage06.jpg');background-size:cover;background-position:center">
+            <span class="sr-only">OFF‑BEAT STAGE #06 썸네일</span>
+          </div>
+          <div class="meta">
+            <p class="title">OFF‑BEAT STAGE #06</p>
+            <p class="muted">Live Clip · 2025</p>
+          </div>
+        </a>
+        <a class="card" href="#">
+          <div class="thumb" style="background-image:url('thumbs/seochon-week.jpg');background-size:cover;background-position:center">
+            <span class="sr-only">서촌 브랜드위크 리캡 썸네일</span>
+          </div>
+          <div class="meta">
+            <p class="title">서촌 브랜드위크 리캡</p>
+            <p class="muted">Recap Film · 2025</p>
+          </div>
+        </a>
+        <a class="card" href="#">
+          <div class="thumb" style="background-image:url('thumbs/folded.jpg');background-size:cover;background-position:center">
+            <span class="sr-only">Folded Live Clip 썸네일</span>
+          </div>
+          <div class="meta">
+            <p class="title">Folded Live Clip</p>
+            <p class="muted">Music · 2025</p>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section class="section" id="about" aria-labelledby="about-heading">
+      <h2 id="about-heading">소개</h2>
+      <div class="highlight">
+        <p style="margin:0">OFF‑BEAT는 사진·영상 제작과 공연 기획/아카이빙을 결합해 로컬의 이야기를 기록합니다. 협업/의뢰 문의 환영합니다.</p>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section class="section" id="contact" aria-labelledby="contact-heading">
+      <h2 id="contact-heading">문의</h2>
+      <div class="highlight">
+        <!-- 초기에는 임베드 폼 사용 권장: 예) 구글폼/Tally 링크 -->
+        <p style="margin:0 0 8px 0">이메일: <a href="mailto:hello@offbeat.example">hello@offbeat.example</a></p>
+        <p style="margin:0">간단히 제안하실 내용과 연락처를 보내주세요. 가능하면 24시간 내 회신합니다.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">© <span id="y"></span> OFF‑BEAT. Seochon, Seoul.</div>
+  </footer>
+
+  <script>
+    // 연도 자동 표기 (JS는 선택 사항)
+    document.getElementById('y').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ANNOUNCEMENT | STUDIO OFF-BEAT</title>
+  <meta name="color-scheme" content="light" />
+  <link rel="preload" href="/data/events.json" as="fetch" crossorigin>
+  <style>
+    /* 홈 CSS를 가져오거나 <link rel="stylesheet">로 분리해도 됩니다 */
+    /* 아래 한 줄만 기억: 5선 악보 느낌 라인(옵션) */
+    .staff-bg{background-image:linear-gradient(to bottom, rgba(0,0,0,.08) 1px, transparent 1px);background-size:100% 22px}
+  </style>
+</head>
+<body>
+  <div class="cam-grid" aria-hidden="true"></div>
+
+  <header>
+    <div class="wrap mast" role="navigation">
+      <a class="brand" href="/">STUDIO OFF-BEAT</a>
+      <nav class="menu">
+        <a href="../announcement/">ANNOUNCEMENT</a>
+        <a href="../collections/">COLLECTIONS</a>
+        <a href="../works/">WORKS</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="section with-vlines">
+      <h2 class="label">ANNOUNCEMENT</h2>
+
+      <!-- 검색 -->
+      <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px">
+        <input id="q" type="search" placeholder="검색(제목/장소/태그)" style="padding:8px;border:1px solid #000;flex:1">
+        <button id="clear" class="btn ghost">초기화</button>
+      </div>
+
+      <!-- 목록 컨테이너 -->
+      <div id="list"></div>
+
+      <!-- 상세 컨테이너 -->
+      <article id="detail" hidden></article>
+    </section>
+  </main>
+
+  <footer><div class="wrap">© <span id="y"></span> STUDIO OFF-BEAT</div></footer>
+
+  <!-- 공용 유틸 -->
+  <script type="module" src="/assets/js/utils.js"></script>
+  <!-- 페이지 스크립트 -->
+  <script type="module">
+    import { $, $$, fetchJSON, formatDateK, buildICS, downloadBlob, renderMarkdown, matches } from '/assets/js/utils.js';
+
+    // Footer year
+    $('#y').textContent = new Date().getFullYear();
+
+    const params = new URLSearchParams(location.search);
+    const id = params.get('id');
+    const listEl = $('#list');
+    const detailEl = $('#detail');
+
+    const data = await fetchJSON('/data/events.json');
+    data.sort((a,b)=> new Date(a.datetime) - new Date(b.datetime));
+
+    function evCard(ev){
+      const price = ev.price ? `₩${ev.price.toLocaleString()}` : 'Free';
+      return `
+        <div class="ann-card staff-bg" style="margin-bottom:14px">
+          <div>
+            <h3 class="ann-title">${ev.title}</h3>
+            <div class="ann-meta" style="margin-top:6px">
+              <span class="badge">${formatDateK(ev.datetime)}</span>
+              <span class="badge">${ev.venue||''}</span>
+              <span class="pill">${price}</span>
+            </div>
+            <p style="margin:12px 0 0;color:#333;max-width:60ch">${(ev.desc_md||'').split('\n')[0]||''}</p>
+            <div class="ann-actions">
+              ${ev.tickets_url?`<a class="ann-btn" href="${ev.tickets_url}" target="_blank" rel="noopener">예매하기</a>`:''}
+              ${ev.more_url?`<a class="ann-btn ghost" href="${ev.more_url}" target="_blank" rel="noopener">자세히 보기</a>`:''}
+              <button class="ann-btn ghost" data-ics="${ev.id}">캘린더(.ics)</button>
+              <a class="ann-btn ghost" href="?id=${encodeURIComponent(ev.id)}">상세보기</a>
+            </div>
+          </div>
+          <div>
+            <ul class="ann-list" aria-label="라인업">
+              ${(ev.lineup||[]).map(x=>`<li><span>${x.label}</span><span>${x.time}</span></li>`).join('')}
+            </ul>
+          </div>
+        </div>`;
+    }
+
+    function renderList(q=''){
+      const upcoming = data.filter(x=>x.status==='upcoming');
+      const past = data.filter(x=>x.status!=='upcoming').reverse();
+
+      function block(title, arr){
+        const filtered = arr.filter(x=>matches(q, x.title, x.venue, (x.tags||[]).join(' '), x.desc_md));
+        if(!filtered.length) return '';
+        return `<h3 class="label" style="margin-top:18px">${title}</h3>` + filtered.map(evCard).join('');
+      }
+
+      listEl.innerHTML = block('UPCOMING', upcoming) + block('PAST', past);
+      listEl.querySelectorAll('[data-ics]').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          const ev = data.find(x=>x.id===btn.dataset.ics);
+          const blob = buildICS({
+            title: ev.title, desc: ev.desc_md, location: ev.venue,
+            start: ev.datetime, end: ev.end
+          });
+          downloadBlob(blob, `${ev.title.replace(/\s+/g,'_')}.ics`);
+        });
+      });
+    }
+
+    function renderDetail(ev){
+      detailEl.hidden = false;
+      listEl.hidden = true;
+      detailEl.innerHTML = `
+        <div class="ann-card staff-bg">
+          <div>
+            <h1 class="ann-title" style="font-size:28px;line-height:1.2">${ev.title}</h1>
+            <div class="ann-meta" style="margin-top:8px">
+              <span class="badge">${formatDateK(ev.datetime)}</span>
+              <span class="badge">${ev.venue||''}</span>
+              <span class="pill">${ev.price?`₩${ev.price.toLocaleString()}`:'Free'}</span>
+            </div>
+            <div class="ann-actions">
+              ${ev.tickets_url?`<a class="ann-btn" href="${ev.tickets_url}" target="_blank" rel="noopener">예매하기</a>`:''}
+              <button class="ann-btn ghost" id="icsDl">캘린더(.ics)</button>
+              <a class="ann-btn ghost" href="/announcement/">목록으로</a>
+            </div>
+            <div style="margin-top:14px">${renderMarkdown(ev.desc_md||'')}</div>
+          </div>
+          <div>
+            ${ev.trailer?`
+              <video class="modal-media" controls playsinline preload="metadata" style="width:100%;max-height:50vh">
+                <source src="/${ev.trailer}" type="video/mp4">
+              </video>`:
+              ev.poster?`<img src="/${ev.poster}" alt="${ev.title}" style="width:100%">`:''
+            }
+            <ul class="ann-list" style="margin-top:10px">
+              ${(ev.lineup||[]).map(x=>`<li><span>${x.label}</span><span>${x.time}</span></li>`).join('')}
+            </ul>
+          </div>
+        </div>`;
+      $('#icsDl').addEventListener('click', ()=>{
+        const blob = buildICS({title: ev.title, desc: ev.desc_md, location: ev.venue, start: ev.datetime, end: ev.end});
+        downloadBlob(blob, `${ev.title.replace(/\s+/g,'_')}.ics`);
+      });
+    }
+
+    // 검색
+    $('#q').addEventListener('input', e=>renderList(e.target.value));
+    $('#clear').addEventListener('click', ()=>{ $('#q').value=''; renderList(''); });
+
+    if(id){
+      const ev = data.find(x=>x.id===id);
+      if(ev) renderDetail(ev); else renderList('');
+    }else{
+      renderList('');
+    }
+  </script>
+</body>
+</html>

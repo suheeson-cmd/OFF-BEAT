@@ -1,0 +1,24 @@
+[
+  {
+    "id": "stage",
+    "title": "Stage",
+    "summary": "공연 기록과 라이브 클립 모음",
+    "cover": "thumbs/thumbs-1.jpg",
+    "images": [
+      { "src": "images/stage/1.jpg", "alt": "OFF-BEAT STAGE" },
+      { "src": "images/stage/2.jpg", "alt": "Light & Stage" }
+    ],
+    "tags": ["live", "archive"],
+    "featured": true
+  },
+  {
+    "id": "music",
+    "title": "Music",
+    "summary": "사운드 중심 프로젝트 셀렉션",
+    "cover": "thumbs/thumbs-2.jpg",
+    "images": [
+      { "src": "images/music/1.jpg", "alt": "Studio" }
+    ],
+    "tags": ["music"]
+  }
+]

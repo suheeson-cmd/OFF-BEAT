@@ -1,0 +1,29 @@
+[
+  {
+    "id": "folded-live-2025",
+    "title": "Folded Live Clip",
+    "type": "video",
+    "year": 2025,
+    "cover": "thumbs/thumbs-3.jpg",
+    "media": [
+      { "type": "video", "src": "clips/folded-preview.mp4" }
+    ],
+    "desc": "스테이지 라이브 클립",
+    "roles": ["Director", "Edit", "Sound"],
+    "tags": ["music", "stage"],
+    "featured": true
+  },
+  {
+    "id": "seochon-recap-2025",
+    "title": "서촌 브랜드위크 리캡",
+    "type": "project",
+    "year": 2025,
+    "cover": "thumbs/thumbs-2.jpg",
+    "media": [
+      { "type": "image", "src": "images/seochon/recap-1.jpg" }
+    ],
+    "desc": "서촌 가을 기록",
+    "roles": ["Director", "Camera", "Edit"],
+    "tags": ["seochon", "documentary"]
+  }
+]

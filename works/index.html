@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WORKS | STUDIO OFF-BEAT</title>
+</head>
+<body>
+  <div class="cam-grid" aria-hidden="true"></div>
+  <header>
+    <div class="wrap mast" role="navigation">
+      <a class="brand" href="/">STUDIO OFF-BEAT</a>
+      <nav class="menu">
+        <a href="../announcement/">ANNOUNCEMENT</a>
+        <a href="../collections/">COLLECTIONS</a>
+        <a href="../works/">WORKS</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="section with-vlines">
+      <div style="display:flex;align-items:center;gap:12px;justify-content:space-between">
+        <h2 class="label" style="margin:0">WORKS</h2>
+        <div class="actions">
+          <input id="q" type="search" placeholder="검색(제목/설명/태그/역할)" style="padding:8px;border:1px solid #000;min-width:240px">
+          <select id="type" class="btn ghost"><option value="">All Types</option><option>video</option><option>photo</option><option>project</option></select>
+          <select id="year" class="btn ghost"><option value="">All Years</option></select>
+          <button id="clear" class="btn ghost">초기화</button>
+        </div>
+      </div>
+      <div class="columns" id="grid"></div>
+    </section>
+
+    <!-- Quick Look 모달(홈과 동일) -->
+    <div class="modal" id="modal" aria-hidden="true" role="dialog" aria-modal="true">
+      <div class="modal-card" role="document">
+        <div class="modal-head">
+          <h3 class="modal-title" id="modalTitle">Title</h3>
+          <button class="modal-close" id="modalClose" aria-label="닫기">닫기</button>
+        </div>
+        <div class="modal-body">
+          <img id="modalImg" class="modal-media" alt="" hidden>
+          <video id="modalVideo" class="modal-media" controls playsinline hidden disablepictureinpicture controlslist="nodownload noplaybackrate noremoteplayback"></video>
+          <p id="modalDesc" style="margin:10px 0 0 0;color:#333"></p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer><div class="wrap">© <span id="y"></span> STUDIO OFF-BEAT</div></footer>
+
+  <script type="module">
+    import { $, $$, fetchJSON, matches } from '/assets/js/utils.js';
+    $('#y').textContent = new Date().getFullYear();
+
+    const data = await fetchJSON('/data/works.json');
+    const years = [...new Set(data.map(x=>x.year).filter(Boolean))].sort((a,b)=>b-a);
+    const yearSel = $('#year'); years.forEach(y=>{ const o=document.createElement('option'); o.value=o.textContent=y; yearSel.appendChild(o); });
+
+    const grid = $('#grid');
+
+    function card(w){
+      return `
+        <a class="item" href="#" data-id="${w.id}">
+          <div class="thumb ${w.type==='video'?'thumb-video':''}">
+            <img src="/${w.cover}" alt="${w.title}">
+          </div>
+          <div class="meta">
+            <h3 class="title">${w.title}</h3>
+            <p class="dek">${w.desc||''} · ${w.year||''}</p>
+          </div>
+        </a>`;
+    }
+
+    function render(){
+      const q = $('#q').value; const t = $('#type').value; const y = $('#year').value;
+      const filtered = data.filter(w =>
+        matches(q, w.title, w.desc, (w.tags||[]).join(' '), (w.roles||[]).join(' ')) &&
+        (!t || w.type===t) && (!y || String(w.year)===y)
+      );
+      grid.innerHTML = filtered.map(card).join('');
+      $$('#grid .item').forEach(el=>{
+        el.addEventListener('click', e=>{
+          e.preventDefault();
+          const w = data.find(x=>x.id===el.dataset.id); if(!w) return;
+          $('#modalTitle').textContent = w.title;
+          $('#modalDesc').textContent = w.desc || '';
+          const v = $('#modalVideo'); const i = $('#modalImg');
+          v.hidden = i.hidden = true; v.pause();
+
+          const first = (w.media||[])[0];
+          if(first?.type==='video'){ v.src = `/${first.src}`; v.hidden=false; v.currentTime=0; v.play().catch(()=>{}); }
+          else { i.src = first?.src?`/${first.src}`:''; i.alt = w.title; i.hidden=false; }
+          $('#modal').classList.add('open');
+        });
+      });
+    }
+    render();
+
+    $('#q').addEventListener('input', render);
+    $('#type').addEventListener('change', render);
+    $('#year').addEventListener('change', render);
+    $('#clear').addEventListener('click', ()=>{ $('#q').value=''; $('#type').value=''; $('#year').value=''; render(); });
+
+    $('#modalClose').addEventListener('click', ()=>$('#modal').classList.remove('open'));
+    $('#modal').addEventListener('click', e=>{ if(e.target.id==='modal') $('#modal').classList.remove('open'); });
+    document.addEventListener('keydown', e=>{ if(e.key==='Escape') $('#modal').classList.remove('open'); });
+  </script>
+</body>
+</html>

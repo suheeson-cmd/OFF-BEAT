@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>COLLECTIONS | STUDIO OFF-BEAT</title>
+</head>
+<body>
+  <div class="cam-grid" aria-hidden="true"></div>
+  <header>
+    <div class="wrap mast" role="navigation">
+      <a class="brand" href="/">STUDIO OFF-BEAT</a>
+      <nav class="menu">
+        <a href="../announcement/">ANNOUNCEMENT</a>
+        <a href="../collections/">COLLECTIONS</a>
+        <a href="../works/">WORKS</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="section with-vlines" id="collections">
+      <h2 class="label">COLLECTIONS</h2>
+      <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px">
+        <input id="q" type="search" placeholder="검색(제목/설명/태그)" style="padding:8px;border:1px solid #000;flex:1">
+        <button id="clear" class="btn ghost">초기화</button>
+      </div>
+      <div class="columns" id="grid"></div>
+    </section>
+
+    <!-- 라이트박스(홈 모달 느낌) -->
+    <div class="modal" id="lb" aria-hidden="true" role="dialog" aria-modal="true">
+      <div class="modal-card" role="document">
+        <div class="modal-head">
+          <h3 class="modal-title" id="lbTitle">Title</h3>
+          <button class="modal-close" id="lbClose" aria-label="닫기">닫기</button>
+        </div>
+        <div class="modal-body">
+          <img id="lbImg" class="modal-media" alt="">
+          <p id="lbCap" style="margin:10px 0 0 0;color:#333"></p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer><div class="wrap">© <span id="y"></span> STUDIO OFF-BEAT</div></footer>
+
+  <script type="module">
+    import { $, $$, fetchJSON, matches } from '/assets/js/utils.js';
+    $('#y').textContent = new Date().getFullYear();
+
+    const data = await fetchJSON('/data/collections.json');
+    const grid = $('#grid');
+
+    function card(c){
+      return `
+        <a class="item" href="#" data-id="${c.id}">
+          <div class="thumb"><img src="/${c.cover}" alt="${c.title}"></div>
+          <div class="meta">
+            <h3 class="title">${c.title}</h3>
+            <p class="dek">${c.summary||''}</p>
+          </div>
+        </a>`;
+    }
+    function render(q=''){
+      grid.innerHTML = data
+        .filter(c => matches(q, c.title, c.summary, (c.tags||[]).join(' ')))
+        .map(card).join('');
+      // click → 라이트박스
+      $$('#grid .item').forEach(el=>{
+        el.addEventListener('click', e=>{
+          e.preventDefault();
+          const c = data.find(x=>x.id===el.dataset.id);
+          if(!c) return;
+          const first = (c.images||[])[0];
+          $('#lbTitle').textContent = c.title;
+          $('#lbImg').src = first?.src ? `/${first.src}` : '';
+          $('#lbImg').alt = first?.alt || c.title;
+          $('#lbCap').textContent = c.summary||'';
+          $('#lb').classList.add('open');
+        });
+      });
+    }
+    render();
+
+    $('#q').addEventListener('input', e=>render(e.target.value));
+    $('#clear').addEventListener('click', ()=>{ $('#q').value=''; render(''); });
+
+    // 라이트박스 닫기
+    $('#lbClose').addEventListener('click', ()=>$('#lb').classList.remove('open'));
+    $('#lb').addEventListener('click', e=>{ if(e.target.id==='lb') $('#lb').classList.remove('open'); });
+    document.addEventListener('keydown', e=>{ if(e.key==='Escape') $('#lb').classList.remove('open'); });
+  </script>
+</body>
+</html>
