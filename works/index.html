@@ -4,6 +4,83 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>WORKS | STUDIO OFF-BEAT</title>
+  <meta name="color-scheme" content="light" />
+  <style>
+    /* ------- Reset / Base ------- */
+    *,*::before,*::after{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;line-height:1.65;background:#f6f6f6;color:#222;
+      -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+      font-family:"Neue Montreal","NeueMontreal","Inter","Noto Sans KR",-apple-system,system-ui,"Apple SD Gothic Neo",Roboto,Arial,sans-serif;
+      letter-spacing:.01em;
+    }
+    img,svg,video{max-width:100%;display:block}
+    .wrap{max-width:1160px;margin-inline:auto;padding:0 18px}
+
+    /* Header */
+    header{position:sticky;top:0;z-index:40;background:#f6f6f6;border-bottom:2px solid #000}
+    .mast{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+    .brand{letter-spacing:.02em;font-weight:700;color:#000;text-decoration:none;font-size:20px}
+    .menu{display:flex;align-items:center;gap:26px}
+    .menu a{position:relative;text-decoration:none;color:#222;font-size:14px}
+    .menu a::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:1px;background:#000;transform:scaleX(0);transform-origin:left;transition:transform .25s ease}
+    .menu a:hover::after{transform:scaleX(1)}
+
+    /* Camera grid */
+    :root{ --grid-line: rgba(0,0,0,.22); --grid-bold: rgba(0,0,0,.18); }
+    .cam-grid{position:fixed;inset:0;pointer-events:none;z-index:3;
+      background-image:
+        linear-gradient(to right,transparent 0 calc(33.333% - .5px), var(--grid-bold) calc(33.333% - .5px) calc(33.333% + .5px),
+          transparent calc(33.333% + .5px) calc(66.666% - .5px), var(--grid-bold) calc(66.666% - .5px) calc(66.666% + .5px),
+          transparent calc(66.666% + .5px) 100%),
+        linear-gradient(to bottom,transparent 0 calc(33.333% - .5px), var(--grid-bold) calc(33.333% - .5px) calc(33.333% + .5px),
+          transparent calc(33.333% + .5px) calc(66.666% - .5px), var(--grid-bold) calc(66.666% - .5px) calc(66.666% + .5px),
+          transparent calc(66.666% + .5px) 100%),
+        linear-gradient(45deg, transparent calc(50% - .5px), var(--grid-line) calc(50% - .5px) calc(50% + .5px), transparent calc(50% + .5px)),
+        linear-gradient(-45deg, transparent calc(50% - .5px), var(--grid-line) calc(50% - .5px) calc(50% + .5px), transparent calc(50% + .5px));
+      background-size:100% 100%; mix-blend-mode:multiply;
+    }
+
+    /* Sections / Grid */
+    .section{padding:28px 0;border-bottom:1px solid #000}
+    .label{display:flex;align-items:center;gap:10px;margin:0 0 14px 0;color:#000;font-weight:700;letter-spacing:.06em}
+    .label::after{content:"";height:1px;background:#000;flex:1}
+    .with-vlines{position:relative}
+    .with-vlines::before{content:"";position:absolute;top:0;bottom:0;left:50%;width:1px;background:#000;opacity:.35;pointer-events:none}
+    @media (max-width:799px){.with-vlines::before{display:none}}
+
+    .columns{column-count:1;column-gap:22px}
+    @media(min-width:800px){.columns{column-count:2}}
+    @media(min-width:1080px){.columns{column-count:3}}
+    .item{break-inside:avoid;border:1px solid #000;background:#fff;margin:0 0 22px 0}
+    .thumb{aspect-ratio:16/10;position:relative;overflow:hidden}
+    .thumb img{width:100%;height:100%;object-fit:cover;filter:grayscale(100%);transition:filter .35s ease,transform .35s ease}
+    .item:hover .thumb img{filter:none;transform:scale(1.02)}
+    .thumb-video video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .25s ease,transform .35s ease;transform:scale(1.02)}
+    .item:hover .thumb-video video{opacity:1;transform:scale(1)}
+    .item:hover .thumb-video img{opacity:0}
+    .meta{padding:12px 14px}
+    .title{margin:0 0 6px 0;font-size:18px;color:#000;font-weight:700;letter-spacing:-0.01em}
+    .dek{margin:0;color:#333;font-size:14px}
+
+    .filters{display:flex;gap:12px;align-items:center;margin:10px 0 0}
+    .btn{appearance:none;border:1px solid #000;background:#000;color:#fff;padding:8px 12px;font-size:13px;cursor:pointer}
+    .btn.ghost{background:transparent;color:#000}
+    select,input[type="search"]{padding:8px;border:1px solid #000;font-size:13px;background:#fff}
+
+    /* Modal */
+    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.6);padding:20px;z-index:1000}
+    .modal.open{display:flex}
+    .modal-card{background:#fff;border:1px solid #000;width:min(920px,92vw)}
+    .modal-head{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #000;padding:10px 12px}
+    .modal-title{margin:0;font-weight:700;font-size:16px}
+    .modal-close{background:#000;color:#fff;border:1px solid #000;padding:6px 10px;cursor:pointer}
+    .modal-body{padding:10px 12px}
+    .modal-media{width:100%;max-height:72vh;object-fit:cover;display:block}
+
+    footer{padding:18px 0}
+  </style>
 </head>
 <body>
   <div class="cam-grid" aria-hidden="true"></div>
@@ -22,17 +99,18 @@
     <section class="section with-vlines">
       <div style="display:flex;align-items:center;gap:12px;justify-content:space-between">
         <h2 class="label" style="margin:0">WORKS</h2>
-        <div class="actions">
-          <input id="q" type="search" placeholder="검색(제목/설명/태그/역할)" style="padding:8px;border:1px solid #000;min-width:240px">
-          <select id="type" class="btn ghost"><option value="">All Types</option><option>video</option><option>photo</option><option>project</option></select>
-          <select id="year" class="btn ghost"><option value="">All Years</option></select>
+        <div class="filters">
+          <input id="q" type="search" placeholder="검색(제목/설명/태그/역할)" />
+          <select id="type"><option value="">All Types</option><option>video</option><option>photo</option><option>project</option></select>
+          <select id="year"><option value="">All Years</option></select>
           <button id="clear" class="btn ghost">초기화</button>
         </div>
       </div>
+
       <div class="columns" id="grid"></div>
     </section>
 
-    <!-- Quick Look 모달(홈과 동일) -->
+    <!-- Quick Look 모달 -->
     <div class="modal" id="modal" aria-hidden="true" role="dialog" aria-modal="true">
       <div class="modal-card" role="document">
         <div class="modal-head">
@@ -50,63 +128,7 @@
 
   <footer><div class="wrap">© <span id="y"></span> STUDIO OFF-BEAT</div></footer>
 
-  <script type="module">
-    import { $, $$, fetchJSON, matches } from '/assets/js/utils.js';
-    $('#y').textContent = new Date().getFullYear();
-
-    const data = await fetchJSON('/data/works.json');
-    const years = [...new Set(data.map(x=>x.year).filter(Boolean))].sort((a,b)=>b-a);
-    const yearSel = $('#year'); years.forEach(y=>{ const o=document.createElement('option'); o.value=o.textContent=y; yearSel.appendChild(o); });
-
-    const grid = $('#grid');
-
-    function card(w){
-      return `
-        <a class="item" href="#" data-id="${w.id}">
-          <div class="thumb ${w.type==='video'?'thumb-video':''}">
-            <img src="/${w.cover}" alt="${w.title}">
-          </div>
-          <div class="meta">
-            <h3 class="title">${w.title}</h3>
-            <p class="dek">${w.desc||''} · ${w.year||''}</p>
-          </div>
-        </a>`;
-    }
-
-    function render(){
-      const q = $('#q').value; const t = $('#type').value; const y = $('#year').value;
-      const filtered = data.filter(w =>
-        matches(q, w.title, w.desc, (w.tags||[]).join(' '), (w.roles||[]).join(' ')) &&
-        (!t || w.type===t) && (!y || String(w.year)===y)
-      );
-      grid.innerHTML = filtered.map(card).join('');
-      $$('#grid .item').forEach(el=>{
-        el.addEventListener('click', e=>{
-          e.preventDefault();
-          const w = data.find(x=>x.id===el.dataset.id); if(!w) return;
-          $('#modalTitle').textContent = w.title;
-          $('#modalDesc').textContent = w.desc || '';
-          const v = $('#modalVideo'); const i = $('#modalImg');
-          v.hidden = i.hidden = true; v.pause();
-
-          const first = (w.media||[])[0];
-          if(first?.type==='video'){ v.src = `/${first.src}`; v.hidden=false; v.currentTime=0; v.play().catch(()=>{}); }
-          else { i.src = first?.src?`/${first.src}`:''; i.alt = w.title; i.hidden=false; }
-          $('#modal').classList.add('open');
-        });
-      });
-    }
-    render();
-
-    $('#q').addEventListener('input', render);
-    $('#type').addEventListener('change', render);
-    $('#year').addEventListener('change', render);
-    $('#clear').addEventListener('click', ()=>{ $('#q').value=''; $('#type').value=''; $('#year').value=''; render(); });
-
-    $('#modalClose').addEventListener('click', ()=>$('#modal').classList.remove('open'));
-    $('#modal').addEventListener('click', e=>{ if(e.target.id==='modal') $('#modal').classList.remove('open'); });
-    document.addEventListener('keydown', e=>{ if(e.key==='Escape') $('#modal').classList.remove('open'); });
-  </script>
-  <script type="module" src="../assets/js/works.js"></script>
+  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+  <script type="module" src="/assets/js/works.js"></script>
 </body>
 </html>
